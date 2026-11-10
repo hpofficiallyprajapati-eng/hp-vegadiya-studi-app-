@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1b5e20">
+    <meta name="description" content="HP VEGADIYA Study App - GSEB અભ્યાસ સામગ્રી">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>HP Vegadiya - Educational App</title>
+    <!-- Google Fonts for better Gujarati text rendering -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-dark: #1b5e20;
+            --accent-color: #81c784;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-bottom: 70px; /* Space for bottom navigation */
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            padding: 18px 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        /* News Ticker */
+        .ticker-wrap {
+            background-color: #fff9c4;
+            border-bottom: 1px solid #fff59d;
+            overflow: hidden;
+            padding: 8px 0;
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+            color: #d84315;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin: 15px 0 10px 5px;
+            font-weight: 700;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        /* Tab Navigation for Switchable View */
+        .tab-bar {
+            display: flex;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: white;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grid Layouts */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* App Cards / Feature Buttons */
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card:active {
+            transform: scale(0.95);
+            background-color: #f1f8e9;
+        }
+
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+            line-height: 1.3;
+        }
+
+        /* Standard Class Circle Badge styling for Std 1 to 12 */
+        .class-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 5px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+            transition: transform 0.2s;
+        }
+
+        .class-card:active {
+            transform: scale(0.95);
+            background-color: #f1f8e9;
+        }
+
+        .class-circle {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px auto;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 3px 6px rgba(46, 125, 50, 0.3);
+        }
+
+        .class-card p {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Dynamic Popups for details */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 15px;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-card {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-card {
+            transform: translateY(0);
+        }
+
+        .popup-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .popup-body {
+            padding: 15px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* Material List Item Style inside Popups */
+        .sub-menu-list {
+            list-style: none;
+        }
+
+        .sub-menu-item {
+            background-color: #f9f9f9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ebeeef;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+        .sub-menu-item:active {
+            background-color: #f1f8e9;
+        }
+
+        .sub-menu-item .item-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sub-menu-item .arrow {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>HP Vegadiya</h1>
+        <p>ભાર વગરનું ભણતર (GSEB)</p>
+    </header>
+
+    <!-- Moving Announcement Ticker -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            📢 નવી શિક્ષણ નીતિ મુજબ ધોરણ ૧ થી ૧૨ નો નવો અભ્યાસક્રમ અહીં ઉપલબ્ધ છે... પરીક્ષા લક્ષી પેપર સેટ ડાઉનલોડ કરવા માટે નીચેના સેક્શનમાં જાઓ...
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+
+        <!-- Navigation Tabs for Sections -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('primary')">પ્રાથમિક (૧ થી ૮)</button>
+            <button class="tab-btn" onclick="switchTab('secondary')">માધ્યમિક (૯ થી ૧૨)</button>
+        </div>
+
+        <!-- Primary Section Tab Content -->
+        <div id="primary" class="tab-content active">
+            <div class="grid-3">
+                <div class="class-card" onclick="openClass('ધોરણ ૧')">
+                    <div class="class-circle">૧</div>
+                    <p>ધોરણ ૧</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૨')">
+                    <div class="class-circle">૨</div>
+                    <p>ધોરણ ૨</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૩')">
+                    <div class="class-circle">૩</div>
+                    <p>ધોરણ ૩</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૪')">
+                    <div class="class-circle">૪</div>
+                    <p>ધોરણ ૪</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૫')">
+                    <div class="class-circle">૫</div>
+                    <p>ધોરણ ૫</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૬')">
+                    <div class="class-circle">૬</div>
+                    <p>ધોરણ ૬</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૭')">
+                    <div class="class-circle">૭</div>
+                    <p>ધોરણ ૭</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૮')">
+                    <div class="class-circle">૮</div>
+                    <p>ધોરણ ૮</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Section Tab Content -->
+        <div id="secondary" class="tab-content">
+            <div class="grid-3">
+                <div class="class-card" onclick="openClass('ધોરણ ૯')">
+                    <div class="class-circle">૯</div>
+                    <p>ધોરણ ૯</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૧૦')">
+                    <div class="class-circle">૧૦</div>
+                    <p>ધોરણ ૧૦</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૧૧')">
+                    <div class="class-circle">૧૧</div>
+                    <p>ધોરણ ૧૧</p>
+                </div>
+                <div class="class-card" onclick="openClass('ધોરણ ૧૨')">
+                    <div class="class-circle">૧૨</div>
+                    <p>ધોરણ ૧૨</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Features Section -->
+        <div class="section-title">એપના મુખ્ય ફીચર્સ</div>
+        <div class="grid-3">
+            <div class="feature-card" onclick="openFeature('પાઠ્યપુસ્તકો', 'books')">
+                <div class="icon">📚</div>
+                <span>પાઠ્યપુસ્તકો</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('સ્વાધ્યાય સોલ્યુશન', 'solution')">
+                <div class="icon">📝</div>
+                <span>સ્વાધ્યાય સોલ્યુશન</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('ઓનલાઇન ટેસ્ટ (MCQ)', 'mcq')">
+                <div class="icon">✍️</div>
+                <span>ઓનલાઇન ટેસ્ટ</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('વીડિયો લેકચર્સ', 'videos')">
+                <div class="icon">🎥</div>
+                <span>વીડિયો લેકચર્સ</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('જુના પેપર્સ', 'papers')">
+                <div class="icon">📄</div>
+                <span>જુના પેપર્સ</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('પરિપત્રો અને ન્યૂઝ', 'news')">
+                <div class="icon">📰</div>
+                <span>પરિપત્રો</span>
+            </div>
+        </div>
+
+        <!-- Extra Entertainment & Creative Section -->
+        <div class="section-title">વિશેષ પ્રવૃત્તિઓ</div>
+        <div class="grid-2">
+            <div class="feature-card" onclick="openFeature('સ્પર્ધાત્મક પરીક્ષા (Competitive)', 'exam')">
+                <div class="icon">🏆</div>
+                <span>Competitive Corner</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('નિબંધ વિભાગ', 'essay')">
+                <div class="icon">✒️</div>
+                <span>નિબંધ અને લેખન</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('બાળ વિભાગ (વાર્તાઓ)', 'stories')">
+                <div class="icon">🧒</div>
+                <span>બાળ વાર્તાઓ</span>
+            </div>
+            <div class="feature-card" onclick="openFeature('શૈક્ષણિક ગેમ્સ', 'games')">
+                <div class="icon">🎮</div>
+                <span>શૈક્ષણિક ગેમ્સ</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Dynamic Popup Modal -->
+    <div id="popupOverlay" class="popup-overlay" onclick="closePopup(event)">
+        <div class="popup-card" onclick="event.stopPropagation()">
+            <div class="popup-header">
+                <span id="popupTitle">વિગત</span>
+                <button class="close-btn" onclick="togglePopup(false)">&times;</button>
+            </div>
+            <div class="popup-body" id="popupBody">
+                <!-- Inner items will be loaded dynamically via Javascript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Mobile Style Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            હોમ
+        </a>
+        <a href="#" class="nav-item" onclick="alert('તમામ ડાઉનલોડ મટીરીયલ ટૂંક સમયમાં શરૂ થશે!')">
+            <div class="nav-icon">📥</div>
+            ડાઉનલોડ
+        </a>
+        <a href="#" class="nav-item" onclick="alert('નવો સિલેબસ લોડ થઈ રહ્યો છે...')">
+            <div class="nav-icon">📋</div>
+            સિલેબસ
+        </a>
+        <a href="#" class="nav-item" onclick="alert('HP Vegadiya એપ વેરઝન ૧.૦')">
+            <div class="nav-icon">👤</div>
+            પ્રોફાઇલ
+        </a>
+    </div>
+
+    <!-- Interactive JavaScript Magic -->
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Popup visibility control
+        function togglePopup(show) {
+            const overlay = document.getElementById('popupOverlay');
+            if (show) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function closePopup(e) {
+            togglePopup(false);
+        }
+
+        // Action when a Class Card is Clicked
+        function openClass(className) {
+            document.getElementById('popupTitle').innerText = className + " - ભણતર મટીરીયલ";
+            
+            // Sub items for specific standard
+            const content = `
+                <div class="sub-menu-list">
+                    <a href="https://gseb.org" target="_blank" class="sub-menu-item">
+                        <span class="item-title">📚 પાઠ્યપુસ્તકો (Textbooks)</span>
+                        <span class="arrow">&rarr;</span>
+                    </a>
+                    <a href="https://gseb.org" target="_blank" class="sub-menu-item">
+                        <span class="item-title">📝 સ્વાધ્યાય સોલ્યુશન ગાઇડ</span>
+                        <span class="arrow">&rarr;</span>
+                    </a>
+                    <a href="#" onclick="alert('આ વિષયના ઓનલાઇન MCQ ટેસ્ટ ટૂંક સમયમાં ચાલુ થશે.')" class="sub-menu-item">
+                        <span class="item-title">✍️ ઓનલાઇન ક્વિઝ / ટેસ્ટ</span>
+                        <span class="arrow">&rarr;</span>
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" class="sub-menu-item">
+                        <span class="item-title">🎥 બેસ્ટ વિડીયો લેક્ચર્સ</span>
+                        <span class="arrow">&rarr;</span>
+                    </a>
+                </div>
+            `;
+            document.getElementById('popupBody').innerHTML = content;
+            togglePopup(true);
+        }
+
+        // Action when an independent Feature Card is Clicked
+        function openFeature(featureName, type) {
+            document.getElementById('popupTitle').innerText = featureName;
+            let content = '';
+
+            if (type === 'books') {
+                content = `
+                    <div class="sub-menu-list">
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">🔹 ધોરણ ૧ થી ૫ પાઠ્યપુસ્તકો</span><span class="arrow">&rarr;</span></a>
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">🔹 ધોરણ ૬ થી ૮ પાઠ્યપુસ્તકો</span><span class="arrow">&rarr;</span></a>
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">🔹 ધોરણ ૯ અને ૧૦ પાઠ્યપુસ્તકો</span><span class="arrow">&rarr;</span></a>
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">🔹 ધોરણ ૧૧ અને ૧૨ પાઠ્યપુસ્તકો</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else if (type === 'solution') {
+                content = `
+                    <div class="sub-menu-list">
+                        <a href="#" onclick="alert('ગણિત સ્વાધ્યાય સોલ્યુશન લોડ થઈ રહ્યું છે...')" class="sub-menu-item"><span class="item-title">📐 ગણિત (Maths) સોલ્યુશન</span><span class="arrow">&rarr;</span></a>
+                        <a href="#" onclick="alert('વિજ્ઞાન સોલ્યુશન ટૂંક સમયમાં ઉપલબ્ધ થશે.')" class="sub-menu-item"><span class="item-title">🧪 વિજ્ઞાન (Science) સોલ્યુશન</span><span class="arrow">&rarr;</span></a>
+                        <a href="#" onclick="alert('ગુજરાતી સ્વાધ્યાય સોલ્યુશન PDF')" class="sub-menu-item"><span class="item-title">✍️ ગુજરાતી (Gujarati) સોલ્યુશન</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else if (type === 'mcq') {
+                content = `
+                    <p style="padding:10px; font-size:14px; color:#555; text-align:center;">જરૂરી પ્રકરણ સિલેક્ટ કરી ઓનલાઇન ટેસ્ટ આપો અને તમારું સ્કોરકાર્ડ મેળવો.</p>
+                    <div class="sub-menu-list" style="margin-top:10px;">
+                        <a href="#" onclick="alert('ટેસ્ટ ૧ શરૂ થઈ રહ્યો છે...')" class="sub-menu-item"><span class="item-title">📝 પ્રકરણ ૧ ટેસ્ટ (MCQ)</span><span class="arrow">&rarr;</span></a>
+                        <a href="#" onclick="alert('ટેસ્ટ ૨ શરૂ થઈ રહ્યો છે...')" class="sub-menu-item"><span class="item-title">📝 પ્રકરણ ૨ ટેસ્ટ (MCQ)</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else if (type === 'videos') {
+                content = `
+                    <div class="sub-menu-list">
+                        <a href="https://www.youtube.com" target="_blank" class="sub-menu-item"><span class="item-title">📺 ધોરણ ૧૦ ગણિત આખી પ્લેલિસ્ટ</span><span class="arrow">&rarr;</span></a>
+                        <a href="https://www.youtube.com" target="_blank" class="sub-menu-item"><span class="item-title">📺 ધોરણ ૧૨ ઇંગ્લિશ ગ્રામર</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else if (type === 'papers') {
+                content = `
+                    <div class="sub-menu-list">
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">📄 માર્ચ ૨૦૨૪ બોર્ડ પેપર</span><span class="arrow">&rarr;</span></a>
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">📄 માર્ચ ૨૦૨૩ બોર્ડ પેપર</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else if (type === 'news') {
+                content = `
+                    <div class="sub-menu-list">
+                        <a href="https://gseb.org" target="_blank" class="sub-menu-item"><span class="item-title">📰 લેટેસ્ટ પરિપત્ર (GSEB Official)</span><span class="arrow">&rarr;</span></a>
+                        <a href="#" onclick="alert('કોઈ નવો શૈક્ષણિક ન્યૂઝ નથી.')" class="sub-menu-item"><span class="item-title">🔔 લોકલ એજ્યુકેશન ન્યૂઝ</span><span class="arrow">&rarr;</span></a>
+                    </div>
+                `;
+            } else {
+                // Default fallback content for common categories
+                content = `
+                    <p style="padding:15px; text-align:center; color:var(--text-light); font-size:15px;">
+                        ✨ <b>${featureName}</b> સેક્શનનો આ ડેટા હાલમાં અપડેટ થઈ રહ્યો છે. ટૂંક સમયમાં અહીં લિંક્સ અને પીડીએફ ફાઇલો ઉમેરવામાં આવશે!
+                    </p>
+                `;
+            }
+
+            document.getElementById('popupBody').innerHTML = content;
+            togglePopup(true);
+        }
+    </script>
+<script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+            });
+        }
+    </script>
+</body>
+</html>
